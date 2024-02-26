@@ -1,39 +1,39 @@
-# Fullstack dApp (Azle + Express + NextJS + ICP)
+# Biblioteca de prestación de libros (Nextjs, TypeScript, Azle)
 
-This template is designed to easily build applications deployed on ICP using Azle + Express for RESTful APIs and Next.js for frontend development.
+Este es un proyecto realizado para el bootcamp de Azle con ICP 
 
 ## Run Locally
 
-Clone the project
+Clona el proyecto 
 
 ```bash
-  git clone https://github.com/adrian-d-hidalgo/azle-api-rest-nextjs
+  git clone https://github.com/Yamikzex/libreria-azle-icp.git
 ```
 
-Go to the project directory
+Ve a la dirección del proyecto
 
 ```bash
-  cd azle-api-rest-nextjs
+  cd libreria-azle-icp
 ```
 
-Install dependencies
+Instalar dependencias:
 
 ```bash
 npm install
 ```
 
-Create a .env file:
+Crear un .env archivo:
 
 ```bash
 # Create .env file
 cp frontend/.env-example frontend/.env
 ```
 
-Start a ICP local replica:
+Iniciar una replica ICP local:    
 
 `dfx start --background --clean`
 
-Get your canister ids:
+Obtener tus ids de los canisters:
 
 ```bash
 # Create canisters
@@ -46,7 +46,7 @@ dfx canister id backend
 dfx canister id internet-identity
 ```
 
-Your .env file should look something like this:
+En tu archivo .env veras algo similar a esto:
 
 ```bash
 # Replace BACKEND_CANISTER_ID with your backend canister id
@@ -55,11 +55,11 @@ NEXT_PUBLIC_API_REST_URL=http://BACKEND_CANISTER_ID.localshot:4943
 NEXT_PUBLIC_INTERNET_IDENTITY_URL=http://INTERNET_IDENTITY_CANISTER_ID.localshot:4943
 ```
 
-Deploy your canisters:
+Despliega tus canisters:
 
 `dfx deploy`
 
-You will receive a result similar to the following (ids could be different four you):
+Cuando obtengas tus resultados se vera como los siguientes (Los ids podrian ser diferentes a los tuyos):
 
 ```bash
 URLs:
@@ -69,20 +69,22 @@ URLs:
     backend: http://127.0.0.1:4943/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai&id=bkyz2-fmaaa-aaaaa-qaaaq-cai
 ```
 
-Open your web browser and enter the Frontend URL to view the web application in action.
+Ingresa la URL del Frontend en tu navegador web para ver la aplicación en acción agregandole "libreria" antes del "?" o tambien puedes poner http://ID_CANISTER_FRONTEND.localhost:4943/libreria.
 
-## Test frontend without deploy to ICP Replica
+## Prueba el Frontend sin Implementar en la Réplica de ICP
 
-Comment the next line into `frontend/next.config.mjs` file:
+Comenta la siguiente línea en el archivo`frontend/next.config.mjs`:
 
 ```javascript
 // output: "export",
 ```
 
-Then, navitate to `frontend` folder:
+Luego, navega hasta el directorio`frontend`:
 
 `cd frontend`
 
-Run the following script:
+Ejecuta el siguiente script:
 
 `npm run dev`
+
+Esto permitirá probar el frontend sin la necesidad de implementar en la Réplica de IC
