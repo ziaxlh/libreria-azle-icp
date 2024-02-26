@@ -7,7 +7,7 @@ Este es un proyecto realizado para el bootcamp de Azle con ICP
 Clona el proyecto 
 
 ```bash
-  git clone https://github.com/Yamikzex/libreria-azle-icp.git
+  git clone [https://github.com/ziaxlh/libreria-azle-icp]
 ```
 
 Ve a la dirección del proyecto
