@@ -71,6 +71,10 @@ URLs:
 
 Ingresa la URL del Frontend en tu navegador web para ver la aplicación en acción agregandole "libreria" antes del "?" o tambien puedes poner http://ID_CANISTER_FRONTEND.localhost:4943/libreria.
 
+En caso que quieras abrir el editor de codigo:
+
+`code .`
+
 ## Prueba el Frontend sin Implementar en la Réplica de ICP
 
 Comenta la siguiente línea en el archivo`frontend/next.config.mjs`:
