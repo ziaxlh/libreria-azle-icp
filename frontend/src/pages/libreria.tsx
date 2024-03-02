@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import './libreria.css'; 
+import React, { useEffect, useState } from 'react';
+import './libreria.css';
 import { AuthButton, useRestActor } from "@bundly/ic-react";
 
 interface Book {
@@ -17,84 +17,9 @@ interface BorrowForm {
   returnDate: string;
 }
 
-const initialBooks: Book[] = [
-  {
-    id: 1,
-    title: 'Harry Potter',
-    author: 'J.K. Rowling',
-    description: 'La serie de libros de Harry Potter narra la historia del joven mago Harry Potter y sus amigos Hermione Granger y Ron Weasley, quienes luchan contra el malvado mago Lord Voldemort.',
-    available: true,
-    image: 'harry-potter.jpg',
-  },
-  {
-    id: 2,
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    description: 'To Kill a Mockingbird es una novela escrita por Harper Lee. Publicada en 1960, fue inmediatamente exitosa, ganando el Premio Pulitzer al año siguiente.',
-    available: true,
-    image: 'to-kill-a-mockingbird.jpg',
-  },
-  {
-    id: 3,
-    title: '1984',
-    author: 'George Orwell',
-    description: '1984 es una novela distópica que narra la historia de Winston Smith, un ciudadano de un estado totalitario. La obra es una crítica a los regímenes totalitarios y la vigilancia masiva.',
-    available: true,
-    image: '1984.jpeg',
-  },
-  {
-    id: 4,
-    title: 'The Great Gatsby',
-    author: 'F. Scott Fitzgerald',
-    description: 'The Great Gatsby es una novela que explora temas como el sueño americano, la decadencia moral y la obsesión por la riqueza durante la década de 1920 en Estados Unidos.',
-    available: true,
-    image: 'the-great-gatsby.jpg',
-  },
-  {
-    id: 5,
-    title: 'One Hundred Years of Solitude',
-    author: 'Gabriel García Márquez',
-    description: 'Cien años de soledad es una novela que narra la historia de la familia Buendía en el ficticio pueblo de Macondo. Es una obra clave en el realismo mágico.',
-    available: true,
-    image: '100-years-of-solitude.jpeg',
-  },
-  {
-    id: 6,
-    title: 'The Hunger Games',
-    author: 'Suzanne Collins',
-    description: 'Los Juegos del Hambre es el primer libro de la trilogía escrita por Suzanne Collins. La historia se desarrolla en un futuro distópico donde los jóvenes deben luchar hasta la muerte en un evento televisado.',
-    available: true,
-    image: 'hunger-games.jpg',
-  },
-  {
-    id: 7,
-    title: 'Catching Fire',
-    author: 'Suzanne Collins',
-    description: 'Catching Fire es el segundo libro de la trilogía Los Juegos del Hambre. La historia sigue a Katniss Everdeen mientras enfrenta nuevas amenazas después de los eventos de los Juegos del Hambre.',
-    available: true,
-    image: 'catching-fire.jpg',
-  },
-  {
-    id: 8,
-    title: 'Mockingjay',
-    author: 'Suzanne Collins',
-    description: 'Mockingjay es el tercer libro de la trilogía Los Juegos del Hambre. La trama se centra en la rebelión contra el Capitolio y el papel clave de Katniss en la revuelta.',
-    available: true,
-    image: 'mockingjay.jpg',
-  },
-  {
-    id: 9,
-    title: 'The Ballad of Songbirds and Snakes',
-    author: 'Suzanne Collins',
-    description: 'The Ballad of Songbirds and Snakes es una precuela de la trilogía Los Juegos del Hambre. La historia se centra en el personaje del Presidente Snow y los eventos que llevaron a la creación de los Juegos del Hambre.',
-    available: true,
-    image: 'songbirds-and-snakes.jpg',
-  }
-];
-
 function App() {
   const backend = useRestActor("backend");
-  const [books, setBooks] = useState<Book[]>(initialBooks);
+  const [books, setBooks] = useState<Book[]>([]);
   const [showBorrowForm, setShowBorrowForm] = useState<boolean>(false);
   const [borrowForm, setBorrowForm] = useState<BorrowForm>({
     name: '',
@@ -107,6 +32,17 @@ function App() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterType, setFilterType] = useState<'all' | 'borrowed' | 'available'>('all');
   const [loginMessageVisible, setLoginMessageVisible] = useState<boolean>(false);
+
+  const fetchBooks = async () => {
+    try {
+      const response = await backend.get("/books");
+      if (response.status === 200) {
+        setBooks(response.data as Book[]); // Añadir 'as Book[]' para indicar el tipo esperado
+      }
+    } catch (error) {
+      console.error({ error });
+    }
+  };
   
   const sortBooksByTitle = () => {
     const sortedBooks = [...books].sort((a, b) => a.title.localeCompare(b.title));
@@ -131,8 +67,10 @@ function App() {
       setLoginMessageVisible(true);
     }
   };
-  
-  
+
+  useEffect(() => {
+    fetchBooks();
+  }, []); 
 
   const handleReturn = (id: number) => {
     setBooks((prevBooks) =>
@@ -172,20 +110,20 @@ function App() {
     } catch (error) {
         console.error({ error });
     }
-}
+  }
 
   const filteredBooks = books.filter((book) => {
-  const lowerCaseTitle = book.title.toLowerCase();
-  const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const lowerCaseTitle = book.title.toLowerCase();
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
 
-  if (lowerCaseTitle.includes(lowerCaseSearchTerm)) {
-    if (filterType === 'all') return true;
-    if (filterType === 'borrowed') return !book.available;
-    if (filterType === 'available') return book.available;
+    if (lowerCaseTitle.includes(lowerCaseSearchTerm)) {
+      if (filterType === 'all') return true;
+      if (filterType === 'borrowed') return !book.available;
+      if (filterType === 'available') return book.available;
+      return false;
+    }
     return false;
-  }
-  return false;
-});
+  });
 
   return (
     <div className="App">
@@ -229,7 +167,6 @@ function App() {
           ))}
         </ul>
       </div>
-      {/* Formulario de préstamo */}
       {showBorrowForm && (
         <div className="borrow-form-container">
           <form onSubmit={handleBorrowFormSubmit}>
@@ -264,22 +201,18 @@ function App() {
           </form>
         </div>
       )}
-
       {returnMessageVisible && (
         <div className="return-message-container">
           <h2>¡Gracias por devolver el libro!</h2>
           <button onClick={handleContinueReading}>Continuar leyendo</button>
         </div>
       )}
-
-        {loginMessageVisible && (
-          <div className="return-message-container">
-            <h2>Inicia sesión primero para pedir prestado</h2>
-            <button onClick={handleContinueReading}>Continuar</button>
-          </div>
-        )}
-
-      {/* Factura */}
+      {loginMessageVisible && (
+        <div className="return-message-container">
+          <h2>Inicia sesión primero para pedir prestado</h2>
+          <button onClick={handleContinueReading}>Continuar</button>
+        </div>
+      )}
       {invoiceVisible && (
         <div className="invoice-container">
           <h2>¡Espero disfrutes de tu libro!</h2>
